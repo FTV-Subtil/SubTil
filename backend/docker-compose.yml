@@ -1,0 +1,103 @@
+version: "3.6"
+
+services:
+  backend:
+    image: ftvsubtil/backend:latest
+    volumes:
+      - ${PWD}/dash:/dash
+    ports:
+      - 8080:8080
+    environment:
+      APP_LABEL: ""
+      APP_LOGO: ""
+      APP_COMPANY_LOGO: ""
+      APP_COMPANY: ""
+      APP_IDENTIFIER: ""
+
+      PORT: ""
+      SSL: ""
+
+      SENDGRID_API_KEY: ""
+
+      DATABASE_URL: ""
+      DATABASE_NAME: ""
+      DATABASE_PORT: ""
+      DATABASE_PASSWORD: ""
+      DATABASE_USERNAME: ""
+      DATABASE_HOSTNAME: ""
+
+      AMQP_HOSTNAME: ""
+      AMQP_PORT: ""
+      AMQP_MANAGEMENT_PORT: ""
+      AMQP_USERNAME: ""
+      AMQP_PASSWORD: ""
+      AMQP_VHOST: ""
+
+      DOCKER_CONTAINER_AMQP_TLS: ""
+      DOCKER_CONTAINER_AMQP_HOSTNAME: ""
+      DOCKER_CONTAINER_AMQP_USERNAME: ""
+      DOCKER_CONTAINER_AMQP_PASSWORD: ""
+      DOCKER_CONTAINER_AMQP_VHOST: ""
+
+      DOCKER_CONTAINER_BACKEND_HOSTNAME: ""
+      DOCKER_CONTAINER_BACKEND_USERNAME: ""
+      DOCKER_CONTAINER_BACKEND_PASSWORD: ""
+
+      ACS_APP: ""
+      WORK_DIR: ""
+      
+      ROOT_DASH_CONTENT: ""
+      ROOT_PASSWORD: ""
+      ROOT_EMAIL: ""
+      HOSTNAME: ""
+
+      VIDEO_FACTORY_ENDPOINT: ""
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 30s
+    depends_on:
+      - database
+      - rabbitmq
+
+  rabbitmq:
+    image: "rabbitmq:3.7.7-management"
+    environment:
+      RABBITMQ_DEFAULT_VHOST: ""
+
+  database:
+    image: "postgres:9.6.1"
+    environment:
+      POSTGRES_USER: ""
+      POSTGRES_PASSWORD: ""
+      POSTGRES_DB: ""
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 30s
+
+  massive-ingest:
+    image: "ftvsubtil/massive_ingest:1.0.0"
+    environment:
+      PORT: ""
+      DATABASE_URL: ""
+      DATABASE_HOSTNAME: ""
+      DATABASE_PORT: ""
+      DATABASE_USERNAME: ""
+      DATABASE_PASSWORD: ""
+      DATABASE_NAME: ""
+      
+      BACKEND_HOSTNAME: ""
+      BACKEND_USERNAME: ""
+      BACKEND_PASSWORD: ""
+
+      AMQP_HOSTNAME: ""
+      AMQP_PORT: ""
+      AMQP_MANAGEMENT_PORT: ""
+      AMQP_USERNAME: ""
+      AMQP_PASSWORD: ""
+      AMQP_VHOST: ""
